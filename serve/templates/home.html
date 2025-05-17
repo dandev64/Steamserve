@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!--
+    sample apps to try
+    milk inside a bag of milk: 1392820
+    signalis: 1262350
+    va11halla: 447530
+-->
+<div class="col-6">
+    <h1 class="welcome"><img src="{% static 'steam-gray.svg' %}"> Steamserve</h1>
+    <h4 class="mono-generic" style="font-size: 16px;">Currently serving <span style="font-size: 24px; color: #CC529B;">{{ total }}</span> apps*</h4>
+
+    {% if messages %}
+        <!-- display message when there's a problem with the query -->
+        <div class="error-messagebox">
+            <div class="row">
+                <div class="col-1">
+                    <h1>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                        </svg>
+                    </h1>
+                </div>
+                <div class="col-11">
+                    {% for message in messages %}
+                        <p class="error-message {{ message.tags }}"><strong>{{ message }}</strong></p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div>
+        <!-- app submission form container -->
+        <div class="container-generic">
+            <h5>Search for a set of apps, and we'll give you more with the same genres.</h5>
+            <form class="applist pb-0" action="{% url 'results' %}" method="POST">
+                {% csrf_token %}
+                <!-- app #1 -->
+                <div class="mb-3">
+                    <label class="form-label" for="app1">App #1:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for an app..." name="app1" id="app1" required>
+                        <button class="btn btn-primary search-button" type="button" id="button-search1">&#8981;</button>
+                    </div>
+                    <div class="container-search" id="results1" style="display: none;"></div>
+                </div>
+                <!-- app #2 -->
+                <div class="mb-3">
+                    <label class="form-label" for="app2">App #2:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for an app..." name="app2" id="app2" required>
+                        <button class="btn btn-primary search-button" type="button" id="button-search2">&#8981;</button>
+                    </div>
+                    <div class="container-search" id="results2" style="display: none;"></div>
+                </div>
+                <!-- app #3 -->
+                <div class="mb-3">
+                    <label class="form-label" for="app3">App #3:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for an app..." name="app3" id="app3" required>
+                        <button class="btn btn-primary search-button" type="button" id="button-search3">&#8981;</button>
+                    </div>
+                    <div class="container-search" id="results3" style="display: none;"></div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <!-- sorting attribute dropdown list -->
+                        <div class="mb-3">
+                            <label class="form-label" for="sortattr">Select attribute to sort by:</label>
+                            <select class="form-select" name="sortattr" id="sortattr" required>
+                                <option value="name" selected>Name</option>
+                                <option value="price">Price</option>
+                                <option value="dlc_count">DLC Count</option>
+                                <option value="achievements">Achievements</option>
+                                <option value="positive">Positive Ratings</option>
+                                <option value="negative">Negative Ratings</option>
+                            </select>
+                        </div>
+                        <!-- sort by descending or ascending -->
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="sortby" id="descending" value="descending" required checked>
+                                <label class="form-check-label" for="descending">Descending</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="sortby" id="ascending" value="ascending" required>
+                                <label class="form-check-label" for="ascending">Ascending</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- submit button -->
+                    <div class="col-6">
+                        <label class="form-label">Click this when you're all set:</label>
+                        <div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <p style="text-align: center;">*dataset updated as of January 2024<br><a href="{% url 'about' %}">How does this work?</a></p>
+    </div>
+</div>
+
+<script>
+    // function to handle the display of search results for the app input section
+    function searchApps(inputID, resultsID) {
+        // grab corresponding elements for search box and results container
+        const query = document.getElementById(inputID).value;
+        const resultsContainer = document.getElementById(resultsID);
+
+        // if the search box contains something:
+        if (query) {
+            // get the results from the linear search in views.py
+            fetch(`/search?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    resultsContainer.innerHTML = '';
+
+                    // if there are valid results:
+                    if (data.results && data.results.length > 0) {
+                        data.results.forEach(app => {
+                            // create element for result, then add query data and class
+                            const listItem = document.createElement('div');
+                            listItem.textContent = `${app.app_id}: ${app.name} (${app.release_date})`;
+                            listItem.classList.add('search-result');
+
+                            // on click, autofill result to search box and hide results container
+                            listItem.onclick = () => {
+                                document.getElementById(inputID).value = `${app.app_id}: ${app.name} (${app.release_date})`;
+                                resultsContainer.style.display = 'none';
+                            };
+
+                            // append result to container
+                            resultsContainer.appendChild(listItem);
+                        });
+
+                        // display results container
+                        resultsContainer.style.display = 'block';
+
+                    } else {
+                        // if no matching results, display message in results container
+                        resultsContainer.innerHTML = '<div>No results found.</div>';
+                        resultsContainer.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    // error message in console just in case
+                    console.error('Error fetching apps:', error);
+                });
+        }
+
+        // event listener to hide results container if user clicks outside of it or search box
+        document.addEventListener('click', function(closeResultsContainer) {
+            if (!resultsContainer.contains(event.target) && !document.getElementById(inputID).contains(event.target)) {
+                resultsContainer.style.display = 'none';
+                document.removeEventListener('click', closeResultsContainer);
+            }
+        });
+    }
+
+    // call the function depending on which search button is clicked
+    document.getElementById('button-search1').onclick = () => searchApps('app1', 'results1');
+    document.getElementById('button-search2').onclick = () => searchApps('app2', 'results2');
+    document.getElementById('button-search3').onclick = () => searchApps('app3', 'results3');
+</script>
+{% endblock %}

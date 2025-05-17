@@ -1,0 +1,124 @@
+body {
+    background-color: #121212;
+    animation: fadein ease 1.5s;
+    animation-iteration-count: 1;
+}
+/* text */
+h1 {
+    text-align: center;
+}
+h1.welcome {
+    font-size: 64px;
+    font-family: "Work Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    font-style: normal;
+}
+h3.appname {
+    font-family: "Roboto Mono";
+}
+h4.mono-generic {
+    text-align: center;
+    font-family: "Roboto Mono";
+    font-optical-sizing: auto;
+    font-weight: normal;
+    font-style: normal;
+}
+a {
+    color: #2C7BB0;
+    text-decoration: none;
+}
+a:hover {
+    color: #CC529B;
+}
+.description {
+    text-align: justify;
+}
+/* images */
+img.queryimg {
+    max-width: 100%;
+    box-shadow: 0 4px 8px #0C0C0CB3;
+    transition: transform ease 0.3s;
+}
+img.queryimg:hover {
+    transform: translateY(-3%) scale(1.03);
+    box-shadow: 0 8px 16px #0C0C0CB3;
+    filter: saturate(110%)
+}
+/* div classes */
+.main {
+    margin-top: 2%;
+    height: 100%;
+    color: #DEDEDE;
+}
+.container-generic {
+    border-radius: 20px;
+    background-color: #1C1C1F;
+    padding: 5%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+.container-queryimg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5%;
+}
+.container-search {
+    background-color: #202428;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 1000;
+}
+/* buttons */
+.btn-primary {
+    background-color: #2C7BB0;
+    border-color: #2C7BB0;
+}
+.btn-primary:hover {
+    background-color: #2E6E98;
+    border-color: #2E6E98;
+}
+/* form and search */
+form.applist {
+    padding-bottom: 2%;
+}
+.search-button {
+    font-weight: bolder;
+}
+.search-result {
+    cursor: pointer;
+    padding: 4px 8px;
+}
+.search-result:hover {
+    background-color: #242832;
+}
+/* error messages */
+.error-messagebox {
+    display: block;
+    border-radius: 20px;
+    background-color: #EE3A3A;
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+.error-message {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+/* page load animation */
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

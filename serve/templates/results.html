@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Results{% endblock %}
+
+{% block content %}
+<div class="col-10">
+    <!-- section 1: information about apps inputted by user -->
+    <h1>Your Apps:</h1>
+    <h4 class="mono-generic" style="font-size: 20px;">
+        Common Genre/s:
+        <span style="color: #CC529B;">
+            {{ showgenres }}
+        </span>
+        {% if fallback %}
+            <span style="color: #EE3A3A;">
+                (Fallback)
+            </span>
+        {% endif %}
+    </h4>
+    <div style="text-align: center; margin-top: 2%;">
+        <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target=".collapse-all-apps" >Toggle All Details</button>
+    </div>
+    <div>
+        <div class="container-generic">
+            <div class="row">
+                <!-- for the apps in the query, show header image, title, and card w/ additional details -->
+                {% for app in applist %}
+                    <div class="col-4">
+                        <div class="container-queryimg">
+                            <a href="https://store.steampowered.com/app/{{ app.app_id }}/">
+                                <img src={{ app.header_image }} class="queryimg" title="{{ app.name }}">
+                            </a>
+                        </div>
+                        <h3 class="appname">{{ app.name }}</h3>
+                        <div class="card bg-dark">
+                            <h3 class="card-header">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#app-details-{{ forloop.counter }}">Toggle Details</button>
+                            </h3>
+                            <div class="card-body">
+                                <div class="collapse collapse-all-apps show" id="app-details-{{ forloop.counter }}">
+                                    <div>
+                                        <p><strong>App ID:</strong> {{ app.app_id }}</p>
+                                        <p><strong>Release Date:</strong> {{ app.release_date }}</p>
+                                        <p><strong>Developer/s:</strong> {{ app.developers }}</p>
+                                        <p><strong>Publisher/s:</strong> {{ app.publishers }}</p>
+                                        <p><strong>DLC Count:</strong> {{ app.dlc_count }}</p>
+                                        <p><strong>No. of Achievements:</strong> {{ app.achievements }}</p>
+                                        <p><strong>Positive Ratings:</strong> {{ app.positive }}</p>
+                                        <p><strong>Negative Ratings:</strong> {{ app.negative }} </p>
+                                        <p><strong>Genres:</strong> {{ app.genres }}</p>
+                                        <h4>Price: ${{ app.price }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <!-- section 2: genre query results -->
+    <h1>Query Results:</h1>
+    <h4 class="mono-generic" style="font-size: 20px;">Displaying {{ querytotal }} matches sorted by: <span style="color: #CC529B">{{ sortattr }}, {{ sortby }}</span></h4>
+    <div style="text-align: center; margin-top: 2%;">
+        <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target=".collapse-all-results" >Toggle All Details</button>
+    </div>
+    <div>
+        <div class="row">
+            <div class="container-generic">
+                <!-- for each entry in the list of apps retrieved by genre, do same as above-->
+                {% for appout in appsuggestions %}
+                    <div class="row">
+                        <div class="col-4">
+                            <h3 class="appname">{{ forloop.counter }}.</h3>
+                            <div class="container-queryimg">
+                                <a href="https://store.steampowered.com/app/{{ appout.app_id }}/">
+                                    <img src={{ appout.header_image }} class="queryimg" title="{{ appout.name }}" style="margin-top: 2%;">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <h3 class="appname">{{ appout.name }}</h3>
+                            <div class="card bg-dark mt-1">
+                                <h3 class="card-header">
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#result-details-{{ forloop.counter }}">Toggle Details</button>
+                                </h3>
+                                <div class="card-body">
+                                    <div class="collapse collapse-all-results" id="result-details-{{ forloop.counter }}">
+                                        <p><strong>App ID:</strong> {{ appout.app_id }}</p>
+                                        <p><strong>Release Date:</strong> {{ appout.release_date }}</p>
+                                        <p><strong>Developer/s:</strong> {{ appout.developers }}</p>
+                                        <p><strong>Publisher/s:</strong> {{ appout.publishers }}</p>
+                                        <p><strong>DLC Count:</strong> {{ appout.dlc_count }}</p>
+                                        <p><strong>No. of Achievements:</strong> {{ appout.achievements }}</p>
+                                        <p><strong>Positive Ratings:</strong> {{ appout.positive }}</p>
+                                        <p><strong>Negative Ratings:</strong> {{ appout.negative }} </p>
+                                        <p><strong>Genres:</strong> {{ appout.genres }}</p>
+                                        <h4>Price: ${{ appout.price }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                {% endfor %}
+                <h5 style="text-align: center; margin-bottom: 0;">End of query results.</h5>
+            </div>
+        </div>
+    </div>
+    <p style="text-align: center;"><a href="{% url 'home' %}">&lt; Back to Home</a></p>
+</div>
+{% endblock %}

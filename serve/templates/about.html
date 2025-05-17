@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+<div class="col-6">
+    <h1>So what's all this?</h1>
+    <div class="container-generic description">
+        <h5>About Steamserve</h5>
+        <p>Steamserve is an online service that in theory, aims to make it easier to find more Steam apps similar to your input based on the genre categories assigned to them. They tend to be quite broad though, so <b>your mileage may vary in perceived quality and themes</b>.</p>
+        <p><i><span style="color: #EE3A3A; font-weight: bold;">DISCLAIMER:</span> Steamserve is meant for academic and entertainment purposes only, and so we are presenting the dataset as is. Please be advised that we do not make any assurances about the quality or kinds of material that may appear in search results.</i></p>
+        <h5>How does it work?</h5>
+        <p>Simply put, you provide three apps and an attribute to sort the results by, then the system does the rest with algorithms.</p>
+        <p>First, it grabs the app genres and creates a set of the common ones between them. After that, it sorts all existing apps in the dataset based on the given attribute. Lastly, using the common set and the sorted list, it conducts a linear search and compares the genres of each to the common set. If there's a match it gets added to the list of suggestions, and this repeats until we have a completed list. At that point we're done, and you can now view the results!</p>
+        <p>The system uses a public dataset <a href="https://huggingface.co/datasets/FronkonGames/steam-games-dataset">that can be found here</a> as a base. However, its cutoff is around January 2024 and it doesn't include unreleased apps, even if they have store pages.</p>
+    </div>
+    <p style="text-align: center;"><a href="{% url 'home' %}">&lt; Back to Home</a></p>
+</div>
+{% endblock %}
